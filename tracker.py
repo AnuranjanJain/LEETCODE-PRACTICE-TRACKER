@@ -103,7 +103,7 @@ def update_leetcode_repo(problems, custom_day=None):
         custom_day: Optional custom day number to use instead of incrementing the current value
     """
     try:
-    # Read the current README.md
+        # Read the current README.md
         if not os.path.exists('readme.md'):
             print("Error: readme.md not found. Creating a new one...")
             with open('readme.md', 'w', encoding='utf-8') as f:
@@ -126,56 +126,56 @@ This repository tracks my daily LeetCode practice problems.
 This project organizes my LeetCode practice by day, tracking progress over time.
 """)
         
-    with open('readme.md', 'r', encoding='utf-8') as f:
-        readme_content = f.read()
-    
-        # Parse current progress metrics
-    total_problems_match = re.search(r'\| Total Problems \| (\d+) \|', readme_content)
-    days_completed_match = re.search(r'\| Days Completed \| (\d+) \|', readme_content)
-    
-    if not total_problems_match or not days_completed_match:
-        print("Error: Could not parse progress metrics from README")
-        return
-    
-    total_problems = int(total_problems_match.group(1))
-    days_completed = int(days_completed_match.group(1))
-    
-    # Update progress metrics
-    new_total_problems = total_problems + len(problems)
-    
-        # Determine the day number
-    if custom_day is not None:
-        new_days_completed = max(custom_day, days_completed)
-    else:
-        new_days_completed = days_completed + 1
+        with open('readme.md', 'r', encoding='utf-8') as f:
+            readme_content = f.read()
         
+        # Parse current progress metrics
+        total_problems_match = re.search(r'\| Total Problems \| (\d+) \|', readme_content)
+        days_completed_match = re.search(r'\| Days Completed \| (\d+) \|', readme_content)
+        
+        if not total_problems_match or not days_completed_match:
+            print("Error: Could not parse progress metrics from README")
+            return
+        
+        total_problems = int(total_problems_match.group(1))
+        days_completed = int(days_completed_match.group(1))
+        
+        # Update progress metrics
+        new_total_problems = total_problems + len(problems)
+        
+        # Determine the day number
+        if custom_day is not None:
+            new_days_completed = max(custom_day, days_completed)
+        else:
+            new_days_completed = days_completed + 1
+            
         # Get current date and time
-    current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Create new day directory
-    new_day = f"day_{custom_day if custom_day is not None else new_days_completed}"
-    new_day_path = os.path.join("practice", new_day)
-    os.makedirs(new_day_path, exist_ok=True)
-    
+        current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Create new day directory
+        new_day = f"day_{custom_day if custom_day is not None else new_days_completed}"
+        new_day_path = os.path.join("practice", new_day)
+        os.makedirs(new_day_path, exist_ok=True)
+        
         # Create new day section content for README
-    new_day_section = f"""
+        new_day_section = f"""
 ### Day {custom_day if custom_day is not None else new_days_completed}
  
 | Problem | Difficulty | Solution |
 |---------|------------|----------|
 """
-    
-        # Process each problem
-    for problem in problems:
-        problem_name = problem['name']
-        problem_url = problem['url']
-        difficulty = problem['difficulty']
-        filename = problem['filename']
         
+        # Process each problem
+        for problem in problems:
+            problem_name = problem['name']
+            problem_url = problem['url']
+            difficulty = problem['difficulty']
+            filename = problem['filename']
+            
             # Create solution file if it doesn't exist
-        solution_path = os.path.join(new_day_path, filename)
-        if not os.path.exists(solution_path):
-            with open(solution_path, 'w', encoding='utf-8') as f:
+            solution_path = os.path.join(new_day_path, filename)
+            if not os.path.exists(solution_path):
+                with open(solution_path, 'w', encoding='utf-8') as f:
                     f.write(f"""# LeetCode Problem: {problem_name}
 # URL: {problem_url}
 # Day: {custom_day if custom_day is not None else new_days_completed}
@@ -186,74 +186,74 @@ This project organizes my LeetCode practice by day, tracking progress over time.
 """)
             
             # Add entry to the README section
-        new_day_section += f"| [{problem_name}]({problem_url}) | {difficulty} | [✅](practice/{new_day}/{filename}) |\n"
-    
-    # Update README content - Progress metrics
-    readme_content = re.sub(
-        r'\| Total Problems \| \d+ \|', 
-        f'| Total Problems | {new_total_problems} |', 
-        readme_content
-    )
-    readme_content = re.sub(
-        r'\| Days Completed \| \d+ \|', 
-        f'| Days Completed | {new_days_completed} |', 
-        readme_content
-    )
-    readme_content = re.sub(
-        r'\| Last Updated \| .* \|', 
-        f'| Last Updated | {current_date} |', 
-        readme_content
-    )
-    
+            new_day_section += f"| [{problem_name}]({problem_url}) | {difficulty} | [✅](practice/{new_day}/{filename}) |\n"
+        
+        # Update README content - Progress metrics
+        readme_content = re.sub(
+            r'\| Total Problems \| \d+ \|', 
+            f'| Total Problems | {new_total_problems} |', 
+            readme_content
+        )
+        readme_content = re.sub(
+            r'\| Days Completed \| \d+ \|', 
+            f'| Days Completed | {new_days_completed} |', 
+            readme_content
+        )
+        readme_content = re.sub(
+            r'\| Last Updated \| .* \|', 
+            f'| Last Updated | {current_date} |', 
+            readme_content
+        )
+        
         # Extract header and footer
-    header_match = re.search(r'(.*?)## Problems', readme_content, re.DOTALL)
-    footer_match = re.search(r'## About.*', readme_content, re.DOTALL)
-    
-    if not header_match or not footer_match:
-        print("Error: Could not parse README structure")
-        return
-    
-    header = header_match.group(1) + "## Problems\n"
-    footer = footer_match.group(0)
-    
+        header_match = re.search(r'(.*?)## Problems', readme_content, re.DOTALL)
+        footer_match = re.search(r'## About.*', readme_content, re.DOTALL)
+        
+        if not header_match or not footer_match:
+            print("Error: Could not parse README structure")
+            return
+        
+        header = header_match.group(1) + "## Problems\n"
+        footer = footer_match.group(0)
+        
         # Find all day sections
-    day_sections = []
-    
-    # Add the new day section
-    day_sections.append((custom_day if custom_day is not None else new_days_completed, new_day_section))
-    
-    # Find existing day sections from the README
-    existing_sections = re.findall(r'### Day (\d+)[\s\S]*?(?=### Day \d+|\n## About)', readme_content + "\n## About")
-    
-    # Process existing sections
-    for section in existing_sections:
-        day_match = re.search(r'### Day (\d+)([\s\S]*?)(?=### Day \d+|\n## About|$)', section)
-        if day_match:
-            day_num = int(day_match.group(1))
-            # Skip if we're replacing this day
-            if day_num == (custom_day if custom_day is not None else new_days_completed):
-                continue
-            # Find the content portion
-            content_match = re.search(r'(### Day \d+[\s\S]*?)(?=### Day \d+|\n## About|$)', section)
-            if content_match:
-                content = content_match.group(1)
-                day_sections.append((day_num, content))
-    
-    # Sort day sections by day number in descending order
-    day_sections.sort(key=lambda x: x[0], reverse=True)
-    
-    # Combine all parts
-    updated_readme = header
-    for _, section in day_sections:
-        updated_readme += section
-    updated_readme += "\n" + footer
-    
-    # Write updated README
-    with open('readme.md', 'w', encoding='utf-8') as f:
-        f.write(updated_readme)
-    
-    print(f"Updated README.md with {len(problems)} new problems for Day {custom_day if custom_day is not None else new_days_completed}")
-    print(f"Created solution files in {new_day_path}")
+        day_sections = []
+        
+        # Add the new day section
+        day_sections.append((custom_day if custom_day is not None else new_days_completed, new_day_section))
+        
+        # Find existing day sections from the README
+        existing_sections = re.findall(r'### Day (\d+)[\s\S]*?(?=### Day \d+|\n## About)', readme_content + "\n## About")
+        
+        # Process existing sections
+        for section in existing_sections:
+            day_match = re.search(r'### Day (\d+)([\s\S]*?)(?=### Day \d+|\n## About|$)', section)
+            if day_match:
+                day_num = int(day_match.group(1))
+                # Skip if we're replacing this day
+                if day_num == (custom_day if custom_day is not None else new_days_completed):
+                    continue
+                # Find the content portion
+                content_match = re.search(r'(### Day \d+[\s\S]*?)(?=### Day \d+|\n## About|$)', section)
+                if content_match:
+                    content = content_match.group(1)
+                    day_sections.append((day_num, content))
+        
+        # Sort day sections by day number in descending order
+        day_sections.sort(key=lambda x: x[0], reverse=True)
+        
+        # Combine all parts
+        updated_readme = header
+        for _, section in day_sections:
+            updated_readme += section
+        updated_readme += "\n" + footer
+        
+        # Write updated README
+        with open('readme.md', 'w', encoding='utf-8') as f:
+            f.write(updated_readme)
+        
+        print(f"Updated README.md with {len(problems)} new problems for Day {custom_day if custom_day is not None else new_days_completed}")
+        print(f"Created solution files in {new_day_path}")
         
         # After creating the problem files and updating the README,
         # also create or update the day-specific README
@@ -275,31 +275,31 @@ def rebuild_readme():
         return
     
     try:
-    # Count total problems and days
-    total_problems = 0
-    day_dirs = []
-    
-    for item in os.listdir(practice_dir):
-        if os.path.isdir(os.path.join(practice_dir, item)) and item.startswith('day_'):
-            try:
-                day_num = int(item.split('_')[1])
-                problems_count = len([f for f in os.listdir(os.path.join(practice_dir, item)) if f.endswith('.py')])
-                day_dirs.append((day_num, item, problems_count))
-                total_problems += problems_count
-            except (ValueError, OSError):
-                continue
-    
-    if not day_dirs:
-        print("Error: No day directories found")
-        return
-    
-    # Sort day dirs by day number in descending order
-    day_dirs.sort(key=lambda x: x[0], reverse=True)
-    max_day = day_dirs[0][0]
-    
-    # Create header content
-    current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    header_content = f"""# LeetCode Practice Tracker
+        # Count total problems and days
+        total_problems = 0
+        day_dirs = []
+        
+        for item in os.listdir(practice_dir):
+            if os.path.isdir(os.path.join(practice_dir, item)) and item.startswith('day_'):
+                try:
+                    day_num = int(item.split('_')[1])
+                    problems_count = len([f for f in os.listdir(os.path.join(practice_dir, item)) if f.endswith('.py')])
+                    day_dirs.append((day_num, item, problems_count))
+                    total_problems += problems_count
+                except (ValueError, OSError):
+                    continue
+        
+        if not day_dirs:
+            print("Error: No day directories found")
+            return
+        
+        # Sort day dirs by day number in descending order
+        day_dirs.sort(key=lambda x: x[0], reverse=True)
+        max_day = day_dirs[0][0]
+        
+        # Create header content
+        current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        header_content = f"""# LeetCode Practice Tracker
 
 This repository tracks my daily LeetCode practice problems.
 
@@ -313,65 +313,65 @@ This repository tracks my daily LeetCode practice problems.
 
 ## Problems
 """
-    
-    # Create day sections
-    day_sections = []
-    
-    for day_num, day_dir, _ in day_dirs:
-        problems_in_dir = []
-        for problem_file in os.listdir(os.path.join(practice_dir, day_dir)):
-            if problem_file.endswith('.py'):
-                try:
-                    with open(os.path.join(practice_dir, day_dir, problem_file), 'r', encoding='utf-8') as f:
-                        content = f.read()
+        
+        # Create day sections
+        day_sections = []
+        
+        for day_num, day_dir, _ in day_dirs:
+            problems_in_dir = []
+            for problem_file in os.listdir(os.path.join(practice_dir, day_dir)):
+                if problem_file.endswith('.py'):
+                    try:
+                        with open(os.path.join(practice_dir, day_dir, problem_file), 'r', encoding='utf-8') as f:
+                            content = f.read()
                             name_match = re.search(r'# LeetCode Problem: (.*)', content)
                             url_match = re.search(r'# URL: (.*)', content)
-                        
-                        if name_match and url_match:
-                            name = name_match.group(1)
-                            url = url_match.group(1)
                             
+                            if name_match and url_match:
+                                name = name_match.group(1)
+                                url = url_match.group(1)
+                                
                                 # Try to get difficulty from file
                                 difficulty_match = re.search(r'# Difficulty: (.*)', content)
                                 difficulty = difficulty_match.group(1) if difficulty_match else "Medium"
-                                
-                            problems_in_dir.append({
-                                'name': name,
-                                'url': url,
-                                'difficulty': difficulty,
-                                'filename': problem_file
-                            })
-                except:
-                    continue
-        
-        if problems_in_dir:
-            # Create the section content
-            section_content = f"""
+                                    
+                                problems_in_dir.append({
+                                    'name': name,
+                                    'url': url,
+                                    'difficulty': difficulty,
+                                    'filename': problem_file
+                                })
+                    except:
+                        continue
+            
+            if problems_in_dir:
+                # Create the section content
+                section_content = f"""
 ### Day {day_num}
  
 | Problem | Difficulty | Solution |
 |---------|------------|----------|
 """
-            for problem in problems_in_dir:
-                section_content += f"| [{problem['name']}]({problem['url']}) | {problem['difficulty']} | [✅](practice/{day_dir}/{problem['filename']}) |\n"
-            
-            day_sections.append(section_content)
-    
-    # Create footer content
-    footer_content = """
+                for problem in problems_in_dir:
+                    section_content += f"| [{problem['name']}]({problem['url']}) | {problem['difficulty']} | [✅](practice/{day_dir}/{problem['filename']}) |\n"
+                
+                day_sections.append(section_content)
+        
+        # Create footer content
+        footer_content = """
 ## About
 
 This project organizes my LeetCode practice by day, tracking progress over time.
 """
-    
-    # Combine all parts
-    updated_readme = header_content + ''.join(day_sections) + footer_content
-    
-    # Write updated README
-    with open('readme.md', 'w', encoding='utf-8') as f:
-        f.write(updated_readme)
-    
-    print(f"Successfully rebuilt README.md with {total_problems} problems across {max_day} days")
+        
+        # Combine all parts
+        updated_readme = header_content + ''.join(day_sections) + footer_content
+        
+        # Write updated README
+        with open('readme.md', 'w', encoding='utf-8') as f:
+            f.write(updated_readme)
+        
+        print(f"Successfully rebuilt README.md with {total_problems} problems across {max_day} days")
     except Exception as e:
         print(f"Error rebuilding README: {e}")
 
@@ -435,8 +435,8 @@ def update_all_headers():
         # Ensure the base directory exists
         if not os.path.exists(base_dir):
             print(f"Error: Practice directory '{base_dir}' not found")
-        return
-    
+            return
+            
         for day_dir in os.listdir(base_dir):
             if day_dir.startswith('day_'):
                 try:
@@ -495,7 +495,7 @@ def upload_to_github():
     
     # First, rebuild the README
     print("Rebuilding README file...")
-        rebuild_readme()
+    rebuild_readme()
     
     # Generate day-specific READMEs
     print("Generating day-specific README files...")
@@ -1308,7 +1308,7 @@ def generate_problem_explanation(problem_url, code_path, use_ai=True):
                 for i, line in enumerate(lines):
                     if not line.strip().startswith('#') and line.strip():
                         code_start = i
-                break
+                        break
                 solution_code = '\n'.join(lines[code_start:])
                 
                 # Extract info from code file
@@ -1566,7 +1566,7 @@ def display_menu():
     print("[10] Upload to GitHub")
     print("[11] Exit")
     
-        while True:
+    while True:
         try:
             choice = input("\nEnter your choice (1-11): ").strip()
             if choice in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']:
@@ -1736,37 +1736,37 @@ def menu_based_main():
                 
                 print("\nEnter problem details (leave empty to finish):")
                 while True:
-            url = input("Problem URL (or leave empty to finish): ").strip()
-            if not url:
-                break
-            
-            details = fetch_problem_details(url)
-            
-            if details:
-                name = details['name']
-                difficulty = details['difficulty']
-                print(f"Found problem: {name} ({difficulty})")
-            else:
-                name = input("Problem name (e.g. 'Two Sum'): ").strip()
-                difficulty = input("Difficulty (Easy/Medium/Hard): ").strip()
-            
-            suggested_filename = name.lower().replace(" ", "_").replace("-", "_").replace("'", "").replace(".", "") + ".py"
-            filename = input(f"Filename [{suggested_filename}]: ").strip()
-            if not filename:
-                filename = suggested_filename
-                
-            problems.append({
-                'name': name,
-                'url': url,
-                'difficulty': difficulty,
-                'filename': filename
-            })
-            
-            if len(problems) >= 2:
-                another = input("Add another problem? (y/n): ").strip().lower()
-                if another != 'y':
-                    break
+                    url = input("Problem URL (or leave empty to finish): ").strip()
+                    if not url:
+                        break
                     
+                    details = fetch_problem_details(url)
+                    
+                    if details:
+                        name = details['name']
+                        difficulty = details['difficulty']
+                        print(f"Found problem: {name} ({difficulty})")
+                    else:
+                        name = input("Problem name (e.g. 'Two Sum'): ").strip()
+                        difficulty = input("Difficulty (Easy/Medium/Hard): ").strip()
+                    
+                    suggested_filename = name.lower().replace(" ", "_").replace("-", "_").replace("'", "").replace(".", "") + ".py"
+                    filename = input(f"Filename [{suggested_filename}]: ").strip()
+                    if not filename:
+                        filename = suggested_filename
+                        
+                    problems.append({
+                        'name': name,
+                        'url': url,
+                        'difficulty': difficulty,
+                        'filename': filename
+                    })
+                    
+                    if len(problems) >= 2:
+                        another = input("Add another problem? (y/n): ").strip().lower()
+                        if another != 'y':
+                            break
+                
                 if problems:
                     update_leetcode_repo(problems, day)
                     
@@ -1778,27 +1778,27 @@ def menu_based_main():
                 while True:
                     url = input("Problem URL: ").strip()
                     if not url:
-                break
-            
-            print(f"Fetching details for {url}...")
-            details = fetch_problem_details(url)
-            
-            if not details:
-                print(f"Skipping {url} due to error fetching details")
-                continue
-                
-            name = details['name']
-            difficulty = details['difficulty']
-            filename = name.lower().replace(" ", "_").replace("-", "_").replace("'", "").replace(".", "") + ".py"
-            
-            problems.append({
-                'name': name,
-                'url': url,
-                'difficulty': difficulty,
-                'filename': filename
-            })
-            
-            print(f"Added problem: {name} ({difficulty})")
+                        break
+                    
+                    print(f"Fetching details for {url}...")
+                    details = fetch_problem_details(url)
+                    
+                    if not details:
+                        print(f"Skipping {url} due to error fetching details")
+                        continue
+                        
+                    name = details['name']
+                    difficulty = details['difficulty']
+                    filename = name.lower().replace(" ", "_").replace("-", "_").replace("'", "").replace(".", "") + ".py"
+                    
+                    problems.append({
+                        'name': name,
+                        'url': url,
+                        'difficulty': difficulty,
+                        'filename': filename
+                    })
+                    
+                    print(f"Added problem: {name} ({difficulty})")
                 
                 if problems:
                     update_leetcode_repo(problems, day)
@@ -1820,18 +1820,18 @@ def menu_based_main():
                     filename = input(f"Filename [{suggested_filename}]: ").strip()
                     if not filename:
                         filename = suggested_filename
-            
-            problems.append({
-                'name': name,
-                'url': url,
-                'difficulty': difficulty,
-                'filename': filename
-            })
-            
+                        
+                    problems.append({
+                        'name': name,
+                        'url': url,
+                        'difficulty': difficulty,
+                        'filename': filename
+                    })
+                    
                     if len(problems) >= 2:
                         another = input("Add another problem? (y/n): ").strip().lower()
                         if another != 'y':
-                break
+                            break
                 
                 if problems:
                     update_leetcode_repo(problems, day)
@@ -1940,7 +1940,7 @@ def generate_day_readme(day_path, day_num):
                     url = url_match.group(1).strip() if url_match else ""
                     difficulty = difficulty_match.group(1).strip() if difficulty_match else "Medium"
                 
-            problems.append({
+                problems.append({
                     'name': problem_name,
                     'filename': filename,
                     'url': url,
@@ -2002,7 +2002,7 @@ def generate_all_day_readmes():
     if not os.path.exists(practice_dir):
         print("Error: Practice directory not found")
         return
-        
+    
     success_count = 0
     failed_count = 0
     
